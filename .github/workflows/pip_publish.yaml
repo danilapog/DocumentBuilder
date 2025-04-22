@@ -24,6 +24,6 @@ jobs:
           GITHUB_API_URL=https://api.github.com/repos/ONLYOFFICE/DocumentBuilder/releases/latest
 
           release_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" -s $GITHUB_API_URL)
-
+          pip install twine
           #python3 -m twine upload  dist/* -u __token__ -p ${PIP_SECRET_KEY}
           echo "test"
