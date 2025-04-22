@@ -20,10 +20,25 @@ jobs:
 
       - name: Publish builder into pip repository
         run: |
-          GITHUB_TOKEN=${{ secrets.TOKEN }}
-          GITHUB_API_URL=https://api.github.com/repos/ONLYOFFICE/DocumentBuilder/releases/latest
-
-          release_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" -s $GITHUB_API_URL)
+          # Setup twine
           pip install twine
+          
+          GITHUB_TOKEN=${{ secrets.TOKEN }}
+          GITHUB_API_URL=https://api.github.com/repos/danilapog/DocumentBuilder/releases/latest
+          release_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" -s $GITHUB_API_URL)
+          whl_url=($(echo "$release_info" | jq -r '.assets[] | select(.name | test("document_builder-.*\\.whl")) | .browser_download_url'))
+          
+          if [[ -z "${whl_url[@]}" ]]; then
+             echo "Nothing to publish, there is no whl files..."
+             exit 0
+          else
+             mkdir ./dist
+          fi
+          
+          for i in ${whl_url[@]}; do
+             wget -P ./dist ${i}
+          done
+
+          ls -ls ./dist
           #python3 -m twine upload  dist/* -u __token__ -p ${PIP_SECRET_KEY}
           echo "test"
