@@ -39,6 +39,5 @@ jobs:
              wget -P ./dist ${i}
           done
 
-          ls -ls ./dist
-          #python3 -m twine upload  dist/* -u __token__ -p ${PIP_SECRET_KEY}
-          echo "test"
+          python3 -m twine upload  dist/* -u __token__ -p ${PIP_SECRET_KEY}
+          echo "Finished..."
