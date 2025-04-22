@@ -1,0 +1,25 @@
+---
+on:
+  release:
+    types: [published]
+
+env:
+  PIP_SECRET_KEY: ${{ secrets.PIP_SECRET_KEY }}
+  
+jobs:
+  upload-release:
+    name: "Publish builder release to pip"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download APK file and Upload on AWS S3
+        id: upload-apk
+        run: |
+          GITHUB_TOKEN=${{ secrets.TOKEN }}
+          GITHUB_API_URL=https://api.github.com/repos/ONLYOFFICE/DocumentBuilder/releases/latest
+
+          release_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" -s $GITHUB_API_URL)
+
+          echo "test"
