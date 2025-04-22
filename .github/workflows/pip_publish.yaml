@@ -14,12 +14,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download APK file and Upload on AWS S3
-        id: upload-apk
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Publish builder into pip repository
         run: |
           GITHUB_TOKEN=${{ secrets.TOKEN }}
           GITHUB_API_URL=https://api.github.com/repos/ONLYOFFICE/DocumentBuilder/releases/latest
 
           release_info=$(curl -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" -s $GITHUB_API_URL)
 
+          python3 -m twine upload  dist/* -u __token__ -p ${PIP_SECRET_KEY}
           echo "test"
